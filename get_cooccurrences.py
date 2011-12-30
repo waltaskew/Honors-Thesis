@@ -51,7 +51,7 @@ class LimitQueue:
         cls.window = window
 
     def __init__(self):
-        ## self.window needs to be set before hand to an appropriate value 
+        ## self.window needs to be set to an appropriate value before-hand
         ## with a LimitQueue.set_window(n) call
         self.queue = []
     
@@ -161,6 +161,7 @@ def add_cooccurrence_count(target, word, cooccurrence_counts):
         try:
             cooccurrence_counts[(target, word)] += 1
         except KeyError:
+            # A cooccurence (target, word) is equivalent to (word, target)
             try:
                 cooccurrence_counts[(word, target)] += 1
             except KeyError:
@@ -190,21 +191,17 @@ def synchronize(word_counts, cooccurrence_counts,
         word_counts_db_file, cooccurrence_counts_db_file):
     """Write structures to disk before clearing their contents from memory.
     """
-    global DEF_LOCALE
     word_counts_db = db.DB()
     word_counts_db.open(word_counts_db_file, None, 
                 db.DB_HASH, db.DB_CREATE)
     for word, count in word_counts.iteritems():
         word = word.encode(DEF_LOCALE)
         old_val = word_counts_db.get(word)
-        try:
+        if old_val is None:
+            new_val = count
+        else:
             new_val = int(old_val) + count
-            word_counts_db.put(word, str(new_val))
-        ## if the key was not found in the database, db.get(word)
-        ## will return None, which will raise a TypeError when we
-        ## try to add an int to None
-        except TypeError:
-            word_counts_db.put(word, str(count))
+        word_counts_db.put(word, str(new_val))
     word_counts_db.close()
     word_counts.clear()
 
@@ -239,7 +236,6 @@ def get_cooccurrences(index_file, target_file, synonym_file,
     """Place cooccurrence counts into a berkely db for a given
     index, given a list of targets to count cooccurrences for
     """
-    global SYNCH_FREQ
     targets = get_targets_from_file(target_file)
     synonyms = get_synonyms_from_file(synonym_file)
     set_window(window)

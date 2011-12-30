@@ -1,4 +1,4 @@
-from cooccurrence_similarity import experimenter
+from cooccurrence_similarity_working import experimenter
 
 ## If you have already created an index and run experiments, they will still be
 ## around after the program which created them exits.  Experimenter objects 

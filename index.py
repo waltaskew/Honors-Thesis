@@ -7,7 +7,6 @@ import os
 DEF_LOCALE = locale.getdefaultlocale()[1]
 
 def iter_indexed_posts(post_db_file, post_delimiter, jar):
-    global DEF_LOCALE
     post_db = db.DB()
     post_db.open(post_db_file, None, db.DB_HASH, db.DB_RDONLY)
     cursor = post_db.cursor()

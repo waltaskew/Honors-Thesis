@@ -26,26 +26,20 @@ RELATION_FILE_PATH = 8
 FEATURE_FILE_PATH = 9
 
 def _count_cooccurrences(files, target_file, synonym_file, window):
-    global INDEX_FILE_PATH, WORD_COUNT_FILE_PATH, COOCCURRENCE_FILE_PATH
     get_cooccurrences.get_cooccurrences(files[INDEX_FILE_PATH], target_file,
             synonym_file, window, files[WORD_COUNT_FILE_PATH],
             files[COOCCURRENCE_FILE_PATH])
     
 def _calculate_PMIs(files, pmi_threshold):
-    global WORD_COUNT_FILE_PATH, COOCCURRENCE_FILE_PATH
-    global COOCCURRENCE_FILE_PATH, TOTAL_WORDS_PATH, PMI_FILE_PATH
     get_PMIs.get_PMIs(files[WORD_COUNT_FILE_PATH], 
             files[COOCCURRENCE_FILE_PATH], pmi_threshold, 
             files[TOTAL_WORDS_PATH], files[PMI_FILE_PATH])
 
 def _calculate_relations(files, relation_threshold):
-    global PMI_FILE_PATH, RELATION_FILE_PATH
     get_relations.get_relations(files[PMI_FILE_PATH], relation_threshold, 
         files[RELATION_FILE_PATH])
 
 def _write_feature_files(files, truth_DB, truth_function):
-    global RELATION_FILE_PATH, PMI_FILE_PATH, COOCCURRENCE_FILE_PATH
-    global FEATURE_FILE_PATH
     get_features.get_features(files[RELATION_FILE_PATH], 
         files[PMI_FILE_PATH], files[COOCCURRENCE_FILE_PATH],
         files[FEATURE_FILE_PATH], truth_DB, truth_function)
@@ -64,8 +58,6 @@ class Experimenter(object):
     def __new__(cls, dir):
         ## __init__ doesn't give us enough control, so we are defining
         ## all of the class creation stuff in __new__
-        global INSTANCE_FILE
-
         if os.path.exists(dir):
             if not os.path.isdir(dir):
                 raise ValueError ("%s is not a directory" % dir)
@@ -115,10 +107,6 @@ class Experimenter(object):
         """Calculate the name of various intermediate files based on the
         arguments passed to perform_experiment.
         """
-        global INDEX_FILE_PATH, TOTAL_WORDS_PATH, TARGET_FILE_PATH
-        global SYONYM_FILE_PATH, WORD_COUNT_FILE_PATH, COOCCURRENCE_FILE_PATH
-        global PMI_FILE_PATH, RELATION_FILE_PATH, FEATURE_FILE_PATH
-                 
         files = {}
         experiment_dir = os.path.join(self.dir, 'experiment_results')
         feature_dir = os.path.join(self.dir, 'features')
@@ -218,7 +206,6 @@ class Experiment:
                 % (self.task, self.args, self.context))
 
     def __call__(self, files):
-        global TASK_FUNCTIONS
         function = TASK_FUNCTIONS[self.task]
         function(files, *self.args)
 

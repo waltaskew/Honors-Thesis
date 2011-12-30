@@ -76,5 +76,4 @@ class Jar:
     def iter_synched_docs(self):
         """Reads through documents which have been synchronized
         """
-        global iter_docs
         iter_docs(self.index_file)

@@ -1,4 +1,4 @@
-from cooccurrence_similarity import experimenter
+from cooccurrence_similarity_working import experimenter
 
 truth='/aut/proj/ir/wsaskew/Data/thesis/truthDSM.db'
 targets='/aut/proj/ir/wsaskew/Data/thesis/targetListDSM.txt'

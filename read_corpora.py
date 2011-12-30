@@ -12,13 +12,11 @@ POST_DELIMITER = '^$~'
 def strip_delimiter(text):
     """ make sure that the delimiter isn't in the post
     """
-    global POST_DELIMITER
     return re.sub(POST_DELIMITER, ' ', text)
 
 def write_posts(title, posts, out_DB):
     """write the posts into a given DB, using the title as the key in the DB
     """
-    global DEF_LOCALE, POST_DELIMITER
     ## make sure we parsed a page with posts (could have been some other 
     ## forum page)
     if title and posts:
