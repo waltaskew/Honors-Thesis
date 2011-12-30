@@ -1,0 +1,64 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module get_relations</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>get_relations</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/aut/proj/ir/wsaskew/System/pythonpath/cooccurrence_similarity_working/get_relations.py">/aut/proj/ir/wsaskew/System/pythonpath/cooccurrence_similarity_working/get_relations.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="_bsddb.html">_bsddb</a><br>
+</td><td width="25%" valign=top><a href="math.html">math</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="get_relations.html#RelationFinder">RelationFinder</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RelationFinder">class <strong>RelationFinder</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Holds&nbsp;data&nbsp;structures&nbsp;needed&nbsp;for&nbsp;computing&nbsp;relations<br>
+between&nbsp;diseases.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="RelationFinder-__init__"><strong>__init__</strong></a>(self, out_file, min_threshold<font color="#909090">=0</font>)</dt></dl>
+
+<dl><dt><a name="RelationFinder-add_cooccurrence"><strong>add_cooccurrence</strong></a>(self, target, word, pmi)</dt><dd><tt>Find&nbsp;cooccurrences&nbsp;which&nbsp;are&nbsp;shared&nbsp;by&nbsp;multiple&nbsp;target&nbsp;words.</tt></dd></dl>
+
+<dl><dt><a name="RelationFinder-add_relation_metrics"><strong>add_relation_metrics</strong></a>(self, target_1, target_2, context_sim, norm, weight)</dt><dd><tt>Hold&nbsp;the&nbsp;weighted&nbsp;average&nbsp;of&nbsp;relation&nbsp;metrics&nbsp;between&nbsp;two&nbsp;targets.</tt></dd></dl>
+
+<dl><dt><a name="RelationFinder-compute_relations"><strong>compute_relations</strong></a>(self)</dt><dd><tt>Compute&nbsp;relation&nbsp;metrics&nbsp;using&nbsp;cooccurrence&nbsp;words&nbsp;shared&nbsp;by<br>
+multiple&nbsp;targets.</tt></dd></dl>
+
+<dl><dt><a name="RelationFinder-write_output"><strong>write_output</strong></a>(self)</dt><dd><tt>Write&nbsp;a&nbsp;Berkely&nbsp;DB&nbsp;which&nbsp;contains&nbsp;calculated&nbsp;relation&nbsp;metrics.</tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-get_relations"><strong>get_relations</strong></a>(pmi_file, min_threshold, out_file)</dt><dd><tt>Use&nbsp;calculated&nbsp;PMI's&nbsp;to&nbsp;compute&nbsp;relationship&nbsp;metrics<br>
+between&nbsp;a&nbsp;list&nbsp;of&nbsp;targets.</tt></dd></dl>
+</td></tr></table>
+</body></html>
