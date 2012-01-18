@@ -1,3 +1,9 @@
+"""The experimenter class allows a user to generate ARFF files while varying a
+number of parameters. The Experimenter class maintains consistency between uses,
+and uses results from previous experiments when possible to avoid
+redundant calculation.
+"""
+
 import os
 import cPickle
 
@@ -26,23 +32,31 @@ RELATION_FILE_PATH = 8
 FEATURE_FILE_PATH = 9
 
 def _count_cooccurrences(files, target_file, synonym_file, window):
+    """Function used for the cooccurrence counting task.
+    """
     get_cooccurrences.get_cooccurrences(files[INDEX_FILE_PATH], target_file,
             synonym_file, window, files[WORD_COUNT_FILE_PATH],
             files[COOCCURRENCE_FILE_PATH])
     
 def _calculate_PMIs(files, pmi_threshold):
+    """Function used for the PMI calculation task.
+    """
     get_PMIs.get_PMIs(files[WORD_COUNT_FILE_PATH], 
             files[COOCCURRENCE_FILE_PATH], pmi_threshold, 
             files[TOTAL_WORDS_PATH], files[PMI_FILE_PATH])
 
 def _calculate_relations(files, relation_threshold):
+    """Function used for the relation calculation task.
+    """
     get_relations.get_relations(files[PMI_FILE_PATH], relation_threshold, 
         files[RELATION_FILE_PATH])
 
-def _write_feature_files(files, truth_DB, truth_function):
+def _write_feature_files(files, truth_db, truth_function):
+    """Function used to output a feature file for use in WEKA.
+    """
     get_features.get_features(files[RELATION_FILE_PATH], 
         files[PMI_FILE_PATH], files[COOCCURRENCE_FILE_PATH],
-        files[FEATURE_FILE_PATH], truth_DB, truth_function)
+        files[FEATURE_FILE_PATH], truth_db, truth_function)
 
 TASK_FUNCTIONS = {
         COOCCURRENCE_TASK: _count_cooccurrences,
@@ -55,29 +69,31 @@ class Experimenter(object):
     """Class which saves results of experiments and determines how
     much work needs to be done to perform a new experiment.
     """
-    def __new__(cls, dir):
+    def __new__(cls, directory):
         ## __init__ doesn't give us enough control, so we are defining
         ## all of the class creation stuff in __new__
-        if os.path.exists(dir):
-            if not os.path.isdir(dir):
-                raise ValueError ("%s is not a directory" % dir)
+        if os.path.exists(directory):
+            if not os.path.isdir(directory):
+                raise ValueError ("%s is not a directory" % directory)
             ## if we have been given a non-empty directory, try to 
             ## return the object pickled into that directory instead
             ## of a new instance
-            elif os.listdir(dir):
+            elif os.listdir(directory):
                 try:
-                    with open(os.path.join(dir, INSTANCE_FILE), 'r') as instance_file:
+                    with open(os.path.join(
+                        directory, INSTANCE_FILE), 'r') as instance_file:
                         return cPickle.load(instance_file)
                 except (cPickle.UnpicklingError, IOError):
-                    raise ValueError ("%s is not a directory created by an Experimenter instance" % dir)
+                    raise ValueError("%s is not a directory created by an "
+                                     "Experimenter instance" % directory)
         else:
-            os.makedirs(dir)
+            os.makedirs(directory)
         ## if we were given an empty directory or a non-existant path
         ## (for which we created a directory), create and return the
         ## object as normal
         obj = super(Experimenter, cls).__new__(cls)
-        obj.dir = dir
-        obj.instance_file = os.path.join(dir, INSTANCE_FILE)
+        obj.directory = directory
+        obj.instance_file = os.path.join(directory, INSTANCE_FILE)
         obj.completed_tasks = {}
         obj.index_contents = {}
         obj.save_instance()
@@ -95,25 +111,27 @@ class Experimenter(object):
         """
         corpus_name = os.path.basename(os.path.normpath(corpus_dir))
         if corpus_name not in self.index_contents:
-            index_file = os.path.join(self.dir, 'index.txt')
-            word_count_file = os.path.join(self.dir, 'total_word_count.txt')
+            index_file = os.path.join(self.directory, 'index.txt')
+            word_count_file = os.path.join(
+                self.directory, 'total_word_count.txt')
             index.build_index(corpus_dir, corpus_type, stop_file,
                     index_file, tag_file, word_count_file, synch_freq)
-            self.index_contents[corpus_name] = (corpus_type, stop_file, tag_file)
+            value = (corpus_type, stop_file, tag_file)
+            self.index_contents[corpus_name] = value
         self.save_instance()
 
     def get_files(self, target_file, synonym_file, window, pmi_threshold,
-            relation_threshold, truth_DB, truth_function):
+            relation_threshold, truth_db, truth_function):
         """Calculate the name of various intermediate files based on the
         arguments passed to perform_experiment.
         """
         files = {}
-        experiment_dir = os.path.join(self.dir, 'experiment_results')
-        feature_dir = os.path.join(self.dir, 'features')
+        experiment_dir = os.path.join(self.directory, 'experiment_results')
+        feature_dir = os.path.join(self.directory, 'features')
 
-        index_file = os.path.join(self.dir, 'index.txt')
+        index_file = os.path.join(self.directory, 'index.txt')
         files[INDEX_FILE_PATH] = index_file
-        total_words_file = os.path.join(self.dir, 'total_word_count.txt')
+        total_words_file = os.path.join(self.directory, 'total_word_count.txt')
 
         files[TOTAL_WORDS_PATH] = total_words_file
         files[TARGET_FILE_PATH] = target_file
@@ -141,20 +159,21 @@ class Experimenter(object):
                                         "%s_%s" % (target_file, synonym_file),
                                         str(truth_function))
         files[FEATURE_FILE_PATH] = os.path.join(feature_file_dir,
-                "%s_%s_%s_features.arff" % (window, pmi_threshold, relation_threshold))
+                "%s_%s_%s_features.arff" %
+                (window, pmi_threshold, relation_threshold))
 
         # create directories for the files we want to create
-        for file_type, file in files.iteritems():
-            if file:
-                dir = os.path.dirname(file)
-                if dir and not os.path.exists(dir):
-                    os.makedirs(dir)
+        for _, file_name in files.iteritems():
+            if file_name:
+                directory = os.path.dirname(file_name)
+                if directory and not os.path.exists(directory):
+                    os.makedirs(directory)
 
         return files
 
     def perform_experiment(self, target_file, synonym_file=None, 
                            window=float('inf'), pmi_threshold=0, 
-                           relation_threshold=0, truth_DB=None, 
+                           relation_threshold=0, truth_db=None, 
                            truth_function=None):
         """Performs an experiment with the requested parameters.  The
         function will reuse past experimental results if possible.
@@ -170,11 +189,12 @@ class Experimenter(object):
                     (relation_threshold,),
                     (target_file, synonym_file, window, pmi_threshold)),
                 Experiment(FEATURE_TASK, 
-                    (truth_DB, truth_function),
-                    (target_file, synonym_file, window, pmi_threshold, relation_threshold)),
+                    (truth_db, truth_function),
+                    (target_file, synonym_file, window, pmi_threshold,
+                     relation_threshold)),
                 ]
         files = self.get_files(target_file, synonym_file, window, pmi_threshold,
-                relation_threshold, truth_DB, truth_function)
+                relation_threshold, truth_db, truth_function)
         for experiment in experiments:
             if experiment not in self.completed_tasks:
                 experiment(files)
@@ -190,8 +210,8 @@ class Experimenter(object):
     def show_index(self):
         """Print directories added to the index onto STDOUT
         """
-        for dir, options in self.index_contents.iteritems():
-            print("indexed %s with options %s" % (dir, options))
+        for directory, options in self.index_contents.iteritems():
+            print("indexed %s with options %s" % (directory, options))
 
 class Experiment:
     """Representation of an experiment to be performed.
